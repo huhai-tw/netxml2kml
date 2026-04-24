@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-# kis2kml.py - Python 3 version
+# netxml2kml.py - Python 3 version
 # Process Kismet netxml files into Google Earth KML for visualization.
 
 import xml.etree.cElementTree as xml
 import sqlite3 as sql
-import sys, getopt
+import os, sys, getopt
 from os.path import exists
 from datetime import datetime
 from xml.sax.saxutils import escape
 
-database = 'wireless.db'
+database = os.path.expanduser('~/.netxml/wireless.db')
 runtime = ""
 total_discovered = 0
 total_saved = 0
@@ -18,22 +18,22 @@ total_exported = 0
 
 def welcome():
     print("\n*****************************************************************")
-    print("* kis2kml, a Kismet netxml file parser                *")
+    print("* netxml2kml, a Kismet netxml file parser                       *")
     print("* Use this script to import networks from a Kismet .netxml file *")
-    print("* or to export them to a Google Earth .kml file           *")
+    print("* or to export them to a Google Earth .kml file                 *")
     print("*****************************************************************\n")
 
 def usage():
-    print("Usage: kis2kml [options]")
+    print("Usage: netxml2kml [options]")
     print("   Options: can be either import (-i) or export (-x).")
     print("          -i <XML input file>   # Input file has to be Kismet .netxml")
     print("          -x <KML export file>  # Export file can have optional -q SQL query")
     print("             -q '<SQL query>'   # (formatted for Sqlite)")
     print("             -c [Restricts export to networks with attached clients]\n")
     print("Examples:\n"
-          "          kis2kml -i kismet-output-file.netxml\n"
-          "          kis2kml -x all-database-contents.kml\n"
-          "          kis2kml -x strong_wep.kml -c \\\n"
+          "          netxml2kml -i kismet-output-file.netxml\n"
+          "          netxml2kml -x all-database-contents.kml\n"
+          "          netxml2kml -x strong_wep.kml -c \\\n"
           "              -q \"SELECT * FROM networks WHERE max_signal_dbm > -60 AND encryption = 'WEP'\"")
 
 ### SECTION 1: Loading networks from Kismet netxml
